@@ -1,147 +1,12 @@
-import "../Auth.css";
 import React from "react";
+import "../Auth.css";
 
-import {
-  Button,
-  CircularProgress,
-  Divider,
-  FormControl,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  Link,
-  OutlinedInput,
-  Paper,
-  Typography,
-} from "@mui/material";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Visibility from "@mui/icons-material/Visibility";
+import { Divider, Grid, Link, Paper, Typography } from "@mui/material";
 
-import { useState, useRef } from "react";
+import Form from "../../../components/Form/Form";
 
 const Cadastro = () => {
   let sxForm = { m: 1, width: "95%" };
-  const senha = useRef();
-  const nomeRef = useRef();
-  const emailRef = useRef();
-  const confirmSenhaRef = useRef();
-  const [loading, setLoading] = useState(false);
-  let [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  function handleClick() {
-    setLoading(true);
-  }
-
-  const handleSubmit = (e) => {
-    handleClick();
-    e.preventDefault();
-
-    const user = {
-      nome: nomeRef.current.value,
-      email: emailRef.current.value,
-      senha: senha.current.value,
-      confirmSenha: confirmSenhaRef.current.value,
-    };
-
-    console.log(user);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
-
-  const FormCadastro = () => {
-    return (
-      <Paper component="form" onSubmit={handleSubmit}>
-        <FormControl sx={sxForm} variant="outlined" required>
-          <InputLabel htmlFor="outlined-required-nome" required>
-            Nome
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-required-nome"
-            type="text"
-            inputRef={nomeRef}
-          />
-        </FormControl>
-        <FormControl sx={sxForm} variant="outlined" required>
-          <InputLabel htmlFor="outlined-required-email" required>
-            Email
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-required-email"
-            type="email"
-            inputRef={emailRef}
-          />
-        </FormControl>
-
-        <FormControl sx={sxForm} variant="outlined" required>
-          <InputLabel htmlFor="outlined-adornment-password" required>
-            Senha
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? "text" : "password"}
-            inputRef={senha}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-
-        <FormControl sx={sxForm} variant="outlined" required>
-          <InputLabel htmlFor="outlined-required-confirSenha" required>
-            Confirmação de senha
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-required-confirSenha"
-            type={showPassword ? "text" : "password"}
-            inputRef={confirmSenhaRef}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          ></OutlinedInput>
-        </FormControl>
-
-        <FormControl sx={sxForm} variant="outlined">
-          <Button type="submit" variant="contained">
-            <span style={loading ? { color: "#DDD" } : { color: "#000" }}>
-              {loading ? "Enviando" : "Cadastrar"}
-            </span>
-            <InputAdornment position="start">
-              {loading && <CircularProgress color="inherit" size={20} />}
-            </InputAdornment>
-          </Button>
-        </FormControl>
-      </Paper>
-    );
-  };
 
   return (
     <Grid container justifyContent="center" mt={4}>
@@ -167,7 +32,8 @@ const Cadastro = () => {
             Cadastre-se para ver as fotos dos seus amigos.
           </Typography>
         </Grid>
-        <FormCadastro />
+
+        <Form type="cadastro" />
 
         <Grid item sx={{ sxForm, p: 2 }} variant="outlined">
           <Divider variant="fullWidth" />
