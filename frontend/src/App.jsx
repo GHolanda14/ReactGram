@@ -8,7 +8,10 @@ import Footer from "./components/Footer/Footer";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Auth/Login/Login";
 import Cadastro from "./pages/Auth/Cadastro/Cadastro";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./hooks/useAuth";
+import { Typography } from "@mui/material";
+import EditProfile from "./pages/EditProfile/EditProfile";
 
 const darkTheme = createTheme({
   palette: {
@@ -17,6 +20,11 @@ const darkTheme = createTheme({
 });
 
 function App() {
+  const { auth, loading } = useAuth();
+
+  if (loading) {
+    return <Typography variant="h3">Carregando...</Typography>;
+  }
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -24,9 +32,22 @@ function App() {
         <Navbar />
         <div className="App">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/cadastro" element={<Cadastro />} />
+            <Route
+              path="/"
+              element={auth ? <Home /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/login"
+              element={!auth ? <Login /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/cadastro"
+              element={!auth ? <Cadastro /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/profile"
+              element={auth ? <EditProfile /> : <Navigate to="/login" />}
+            />
           </Routes>
         </div>
         <Footer />

@@ -34,11 +34,9 @@ const cadastrar = async (req, res) => {
   });
 
   if (!newUser) {
-    res
-      .status(422)
-      .json({
-        errors: "Houve algum error, por favor tente novamente mais tarde.",
-      });
+    res.status(422).json({
+      errors: "Houve algum error, por favor tente novamente mais tarde.",
+    });
     return;
   }
 
@@ -55,13 +53,14 @@ const login = async (req, res) => {
   const user = await User.findOne({ email }); //Encontrar email via mongoose
 
   if (!user) {
-    res.status(404).json({ errors: "Usuário não encontrado" });
+    res.status(404).json({ errors: ["E-mail e/ou senha inválidos"] });
     return;
   }
 
   //Checar senha com o bcrypt
   if (!(await bcrypt.compare(senha, user.senha))) {
-    res.status(422).json({ errors: "Senha inválida!" });
+    res.status(422).json({ errors: ["Credenciais inválidas"] });
+    return;
   }
 
   res.status(201).json({
@@ -117,7 +116,9 @@ const update = async (req, res) => {
 const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findById(mongoose.Types.ObjectId(id)).select("-senha");
+    const user = await User.findById(mongoose.Types.ObjectId(id)).select(
+      "-senha"
+    );
 
     if (!user) {
       res.status(404).json({ errors: "Usuário não encontrado." });
