@@ -3,7 +3,7 @@ import "../Auth.css";
 
 import { Divider, Grid, Link, Paper, Typography } from "@mui/material";
 
-import Form from "../../../components/Form/Form";
+import FormCadastro from "../../../components/Forms/FormCadastro";
 
 const Cadastro = () => {
   let sxForm = { m: 1, width: "95%" };
@@ -33,7 +33,7 @@ const Cadastro = () => {
           </Typography>
         </Grid>
 
-        <Form type="cadastro" />
+        <FormCadastro />
 
         <Grid item sx={{ sxForm, p: 2 }} variant="outlined">
           <Divider variant="fullWidth" />

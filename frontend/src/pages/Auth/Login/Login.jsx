@@ -1,7 +1,11 @@
-import "../Auth.css";
 import React from "react";
-import Form from "../../../components/Form/Form";
-import { Grid, Paper, Typography } from "@mui/material";
+import "../Auth.css";
+
+import { Divider, Grid, Link, Paper, Typography } from "@mui/material";
+
+import FormLogin from "../../../components/Forms/FormLogin";
+
+let sxForm = { m: 1, width: "95%" };
 
 const Login = () => {
   return (
@@ -28,10 +32,31 @@ const Login = () => {
             Logue para começar a curtir as fotos!
           </Typography>
         </Grid>
-        <Form type="login" />
+
+        <FormLogin />
+
+        <Grid item sx={{ sxForm, p: 2 }} variant="outlined">
+          <Divider variant="fullWidth" />
+        </Grid>
+
+        <Grid
+          item
+          sx={{
+            sxForm,
+            p: 1,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+          variant="outlined"
+        >
+          Não tem uma conta?
+          <Link href="/login" to={"/cadastrar"} ml={0.2} underline="hover">
+            Cadastre-se
+          </Link>
+        </Grid>
       </Paper>
     </Grid>
   );
 };
-
 export default Login;
