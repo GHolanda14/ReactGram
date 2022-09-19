@@ -10,6 +10,7 @@ const initialState = {
   loading: false,
 };
 
+//Cadastra e loga
 export const cadastrar = createAsyncThunk(
   "auth/cadastrar",
   async (user, thunkAPI) => {
@@ -23,6 +24,21 @@ export const cadastrar = createAsyncThunk(
   }
 );
 
+//Logout usuário
+export const logout = createAsyncThunk("auth/logout", async () => {
+  await authService.logout();
+});
+
+//Login usuário
+export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
+  const data = await authService.login(user);
+
+  if (data.errors) {
+    return thunkAPI.rejectWithValue(data.errors[0]);
+  }
+  return data;
+});
+
 export const authSlide = createSlice({
   name: "auth",
   initialState,
@@ -30,7 +46,7 @@ export const authSlide = createSlice({
     reset: (state) => {
       state.loading = false;
       state.error = false;
-      state.succes = false;
+      state.success = false;
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +62,27 @@ export const authSlide = createSlice({
         state.user = action.payload;
       })
       .addCase(cadastrar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.user = null;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+        state.user = null;
+      })
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = false;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.user = null;
