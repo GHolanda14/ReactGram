@@ -13,12 +13,13 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { useAuth } from "../../hooks/useAuth";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from "../../slices/authSlice";
 import "./Navbar.css";
 
 const Navbar = () => {
   const { auth } = useAuth();
+  const { user } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -61,11 +62,10 @@ const Navbar = () => {
         </NavLink>
         {auth ? (
           <>
-            {/*todo: Mudar a rota!! */}
-            <NavLink to={"/cadastro"} className="nav">
+            <NavLink to={`/users/${user._id}`} className="nav">
               <CameraAltIcon fontSize="large" />
             </NavLink>
-            <NavLink to={"/profile"} className="nav">
+            <NavLink to={"/perfil"} className="nav">
               <AccountCircleIcon fontSize="large" />
             </NavLink>
             <NavLink to="" onClick={handleLogout} className="nav">

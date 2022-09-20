@@ -51,7 +51,7 @@ const Login = () => {
           variant="outlined"
         >
           Não tem uma conta?
-          <Link href="/login" to={"/cadastrar"} ml={0.2} underline="hover">
+          <Link href="/cadastro" ml={0.2} underline="hover">
             Cadastre-se
           </Link>
         </Grid>
