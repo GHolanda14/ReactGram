@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Button,
+  CircularProgress,
   FormControl,
   Grid,
   InputAdornment,
@@ -10,22 +11,21 @@ import {
   TextField,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import { uploads } from "../../utils/config";
 import { useDispatch, useSelector } from "react-redux";
-import { perfil, resetMessage } from "../../slices/userSlice";
+import { perfil, resetMessage, updateProfile } from "../../slices/userSlice";
+import { uploads } from "../../utils/config";
 
 const FormEdit = () => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [imagem, setImagem] = useState("");
+  const [imagemPerfil, setImagemPerfil] = useState("");
   const [bio, setBio] = useState("");
   const [senha, setSenha] = useState("");
-  const avatarUrl = null;
+  const [preview, setPreview] = useState("");
+
   const dispatch = useDispatch();
   const { user, message, error, loading } = useSelector((state) => state.user);
-
   let sxForm = { m: 1, width: "95%" };
 
   useEffect(() => {
@@ -37,12 +37,51 @@ const FormEdit = () => {
       setNome(user.nome);
       setEmail(user.email);
       setBio(user.bio);
-      // console.log(user);
     }
   }, [user]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const userData = {
+      nome: null,
+      email: null,
+      senha: null,
+      bio: null,
+      imagemPerfil: null,
+    };
+
+    if (nome) userData.nome = nome;
+
+    if (email) userData.email = email;
+
+    if (bio) userData.bio = bio;
+
+    if (imagemPerfil) userData.imagemPerfil = imagemPerfil;
+
+    if (senha) userData.senha = senha;
+
+    //construindo form data
+    const formData = new FormData();
+
+    const userFormData = Object.keys(userData).forEach((key) =>
+      formData.append(key, userData[key])
+    );
+
+    formData.append("user", userFormData);
+
+    await dispatch(updateProfile(formData));
+
+    // setTimeout(() => {
+    //   dispatch(resetMessage());
+    // }, 2000);
+  };
+
+  const handlePicture = (e) => {
+    const imagem = e.target.files[0];
+
+    setPreview(imagem);
+    setImagemPerfil(imagem);
   };
 
   return (
@@ -60,14 +99,23 @@ const FormEdit = () => {
                   component="label"
                   sx={{ bgcolor: "primary.main" }}
                 >
-                  <input hidden accept="image/*" type="file" />
+                  <input
+                    hidden
+                    accept="image/*"
+                    type="file"
+                    onChange={handlePicture}
+                  />
                   <PhotoCamera />
                 </IconButton>
               }
             >
               <Avatar
-                sx={{ width: 66, height: 66 }}
-                src={avatarUrl ? avatarUrl : null}
+                sx={{ width: 100, height: 100 }}
+                src={
+                  preview
+                    ? URL.createObjectURL(preview)
+                    : `${uploads}/users/${user.imagemPerfil}`
+                }
               />
             </Badge>
           </Grid>
@@ -104,12 +152,11 @@ const FormEdit = () => {
           />
           <FormControl sx={sxForm} variant="outlined">
             <Button type="submit" variant="contained">
-              <span style={false ? { color: "#DDD" } : { color: "#000" }}>
-                {/* {loading ? "Enviando" : "Atualizar"} */}
-                Atualizar
+              <span style={loading ? { color: "#DDD" } : { color: "#000" }}>
+                {loading ? "Enviando" : "Atualizar"}
               </span>
               <InputAdornment position="start">
-                {/* {loading && <CircularProgress color="inherit" size={20} />} */}
+                {loading && <CircularProgress color="inherit" size={20} />}
               </InputAdornment>
             </Button>
           </FormControl>

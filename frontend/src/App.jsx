@@ -12,6 +12,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { Typography } from "@mui/material";
 import EditProfile from "./pages/EditProfile/EditProfile";
+import Profile from "./pages/Profile/Profile";
 
 const darkTheme = createTheme({
   palette: {
@@ -45,8 +46,12 @@ function App() {
               element={!auth ? <Cadastro /> : <Navigate to="/" />}
             />
             <Route
-              path="/profile"
+              path="/perfil"
               element={auth ? <EditProfile /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/users/:id"
+              element={auth ? <Profile /> : <Navigate to="/login" />}
             />
           </Routes>
         </div>

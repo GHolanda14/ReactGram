@@ -49,7 +49,6 @@ const cadastrar = async (req, res) => {
 //Logar
 const login = async (req, res) => {
   const { email, senha } = req.body;
-
   const user = await User.findOne({ email }); //Encontrar email via mongoose
 
   if (!user) {
@@ -62,7 +61,7 @@ const login = async (req, res) => {
     res.status(422).json({ errors: ["Credenciais inválidas"] });
     return;
   }
-
+  //Verificar isso aqui
   res.status(201).json({
     _id: user.id,
     imagemPerfil: user.imagemPerfil,
@@ -72,15 +71,14 @@ const login = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   const user = req.user;
-  res.status(201).json({ user });
+  res.status(200).json(user);
 };
 
 const update = async (req, res) => {
   const { nome, senha, bio } = req.body;
-  let profileImage = null;
-
+  let imagemPerfil = null;
   if (req.file) {
-    profileImage = req.file.fileName;
+    imagemPerfil = req.file.filename;
   }
 
   const reqUser = req.user;
@@ -89,23 +87,22 @@ const update = async (req, res) => {
     "-senha"
   );
 
-  if (nome) {
+  if (nome != "nulls") {
     user.nome = nome;
   }
-
-  if (senha) {
+  if (senha != "null") {
     const salt = await bcrypt.genSalt(); //Gera string aleatória
     const senhaHash = await bcrypt.hash(senha, salt); //Criando hash da senha
 
     user.senha = senhaHash;
   }
 
-  if (profileImage) {
-    user.profileImage = profileImage;
+  if (imagemPerfil) {
+    user.imagemPerfil = imagemPerfil;
   }
 
-  if (bio) {
-    user.bio = bio;
+  if (bio.trim() && bio != "null") {
+    user.bio = bio.trim();
   }
 
   await user.save();
