@@ -114,7 +114,8 @@ const FormEdit = () => {
                 src={
                   preview
                     ? URL.createObjectURL(preview)
-                    : `${uploads}/users/${user.imagemPerfil}`
+                    : user.imagemPerfil &&
+                      `${uploads}/users/${user.imagemPerfil}`
                 }
               />
             </Badge>

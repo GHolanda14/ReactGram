@@ -61,7 +61,7 @@ const Profile = () => {
             justifyContent="center"
           >
             <Avatar
-              src={`${uploads}/users/${user.imagemPerfil}`}
+              src={user.imagemPerfil && `${uploads}/users/${user.imagemPerfil}`}
               sx={{ width: 130, height: 130 }}
               alt={user.nome}
             />
