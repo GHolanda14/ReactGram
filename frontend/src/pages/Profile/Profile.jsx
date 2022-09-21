@@ -44,7 +44,9 @@ const Profile = () => {
 
   const handlePicture = (e) => {
     const imagem = e.target.files[0];
-    setPreview(imagem);
+    if (imagem) {
+      setPreview(imagem);
+    }
   };
 
   return (
