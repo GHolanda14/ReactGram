@@ -11,14 +11,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { AppBar } from "@mui/material";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { useAuth } from "../../hooks/useAuth";
 
 import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from "../../slices/authSlice";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const { auth } = useAuth();
   const { user } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
@@ -60,7 +58,7 @@ const Navbar = () => {
         <NavLink to={"/"} className="nav">
           <HomeIcon fontSize="large" />
         </NavLink>
-        {auth ? (
+        {user ? (
           <>
             <NavLink to={`/users/${user._id}`} className="nav">
               <CameraAltIcon fontSize="large" />

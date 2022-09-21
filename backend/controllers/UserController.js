@@ -87,7 +87,7 @@ const update = async (req, res) => {
     "-senha"
   );
 
-  if (nome != "nulls") {
+  if (nome != "null") {
     user.nome = nome;
   }
   if (senha != "null") {

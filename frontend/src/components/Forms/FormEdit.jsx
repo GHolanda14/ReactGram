@@ -72,9 +72,9 @@ const FormEdit = () => {
 
     await dispatch(updateProfile(formData));
 
-    // setTimeout(() => {
-    //   dispatch(resetMessage());
-    // }, 2000);
+    setTimeout(() => {
+      dispatch(resetMessage());
+    }, 2000);
   };
 
   const handlePicture = (e) => {
