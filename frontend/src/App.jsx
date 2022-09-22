@@ -13,6 +13,8 @@ import { useAuth } from "./hooks/useAuth";
 import { Typography } from "@mui/material";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import Profile from "./pages/Profile/Profile";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const darkTheme = createTheme({
   palette: {
@@ -28,6 +30,7 @@ function App() {
   }
   return (
     <ThemeProvider theme={darkTheme}>
+      {/* <ToastContainer> */}
       <CssBaseline />
       <BrowserRouter>
         <Navbar />
@@ -57,6 +60,7 @@ function App() {
         </div>
         <Footer />
       </BrowserRouter>
+      {/* </ToastContainer> */}
     </ThemeProvider>
   );
 }

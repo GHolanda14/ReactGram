@@ -8,6 +8,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getUserDetails } from "../../slices/userSlice";
 import {
+  publishPhoto,
+  resetError,
+  resetMessage,
+  getUserPhotos,
+} from "../../slices/photoSlice";
+import {
   Avatar,
   Divider,
   Box,
@@ -20,9 +26,12 @@ import {
   CardMedia,
   CardContent,
   IconButton,
+  Grid,
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CloseIcon from "@mui/icons-material/Close";
+import Galeria from "../../components/Galeria/Galeria";
+// import { toast } from "react-toastify";
 
 let sxForm = { m: 1, width: "95%" };
 
@@ -31,21 +40,54 @@ const Profile = () => {
   const dispatch = useDispatch();
   const { user, loading } = useSelector((state) => state.user);
   const { user: userAuth } = useSelector((state) => state.auth);
-  const [preview, setPreview] = useState("");
+  const {
+    loading: loadingPhoto,
+    error: errorPhoto,
+    message: messagePhoto,
+  } = useSelector((state) => state.photo);
+  const { photos } = useSelector((state) => state.photo);
+  console.log(photos);
+  const [imagem, setImagem] = useState("");
+  const [titulo, setTitulo] = useState("");
+  const tituloRef = useRef("");
 
   useEffect(() => {
     dispatch(getUserDetails(id));
+    dispatch(getUserPhotos(id));
   }, [dispatch, id]);
+
+  const validateTitulo = errorPhoto && errorPhoto.includes("título");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("uhu");
+    console.log(tituloRef.current.value);
+    const photoData = {
+      titulo: tituloRef.current.value,
+      imagem,
+    };
+    const formData = new FormData();
+
+    const photoFormData = Object.keys(photoData).forEach((key) =>
+      formData.append(key, photoData[key])
+    );
+
+    formData.append("photo", photoFormData);
+
+    dispatch(publishPhoto(formData));
+    // setTitulo("");
+    // setImagem("");
+    // const notify = () => toast.success("Sucesso demais bixo");
+    // notify;
+
+    setTimeout(() => {
+      dispatch(resetMessage());
+    }, 2000);
   };
 
   const handlePicture = (e) => {
-    const imagem = e.target.files[0];
-    if (imagem) {
-      setPreview(imagem);
+    const image = e.target.files[0];
+    if (image) {
+      setImagem(image);
     }
   };
 
@@ -93,6 +135,18 @@ const Profile = () => {
             variant="outlined"
             placeholder="Insira um título"
             sx={sxForm}
+            inputRef={tituloRef}
+            onChange={() => dispatch(resetError())}
+            // value={titulo}
+            // onChange={(e) => {
+            //   if (errorPhoto) {
+            //     dispatch(resetError());
+            //   }
+            //   setTitulo(e.target.value);
+            // }}
+            required
+            error={validateTitulo}
+            helperText={validateTitulo && errorPhoto}
           />
 
           <FormControl sx={sxForm}>
@@ -104,9 +158,9 @@ const Profile = () => {
                 type="file"
                 onChange={handlePicture}
               />
-              {preview && (
+              {imagem && (
                 <IconButton
-                  onClick={() => setPreview("")}
+                  onClick={() => setImagem("")}
                   sx={{
                     position: "absolute",
                     right: 3,
@@ -122,11 +176,25 @@ const Profile = () => {
               <CardActionArea
                 onClick={() => document.getElementById("teste").click()}
               >
-                {preview ? (
-                  <CardMedia
-                    component="img"
-                    image={URL.createObjectURL(preview)}
-                  />
+                {imagem ? (
+                  loadingPhoto ? (
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography gutterBottom variant="h5" component="div">
+                        Carregando...
+                      </Typography>
+                    </CardContent>
+                  ) : (
+                    <CardMedia
+                      component="img"
+                      image={URL.createObjectURL(imagem)}
+                    />
+                  )
                 ) : (
                   <CardContent
                     sx={{
@@ -152,6 +220,7 @@ const Profile = () => {
           </FormControl>
         </Box>
       )}
+      <Galeria photos={photos} uploads={uploads} />
     </Box>
   );
 };

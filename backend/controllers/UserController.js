@@ -86,7 +86,6 @@ const update = async (req, res) => {
   const user = await User.findById(mongoose.Types.ObjectId(reqUser._id)).select(
     "-senha"
   );
-
   if (nome != "null") {
     user.nome = nome;
   }
