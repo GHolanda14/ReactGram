@@ -44,7 +44,9 @@ const deletePhoto = async (req, res) => {
     }
 
     await Photo.findByIdAndDelete(foto._id);
-    res.status(201).json({ message: "Foto excluída com sucesso." });
+    res
+      .status(200)
+      .json({ id: foto._id, message: "Foto excluída com sucesso." });
   } catch (error) {
     res.status(404).json({ errors: "Foto não encontrada!" });
     return;
@@ -76,11 +78,11 @@ const getPhotoById = async (req, res) => {
   if (!foto) {
     return res.status(404).json({ errors: "Foto não encontrada!" });
   }
+
   return res.status(201).json(foto);
 };
 
 const updatePhoto = async (req, res) => {
-  console.log("Devo estar depois");
   const { id } = req.params;
   const { titulo } = req.body;
 
@@ -104,9 +106,13 @@ const updatePhoto = async (req, res) => {
     foto.titulo = titulo;
   }
 
-  await foto.save();
-
-  res.status(201).json({ foto, message: "Foto atualizada com sucesso" });
+  await foto
+    .save()
+    .then((response) => {
+      res.status(201).json({ foto, message: "Foto atualizada com sucesso" });
+      return;
+    })
+    .catch((err) => console.log(err));
 };
 
 const likePhoto = async (req, res) => {
