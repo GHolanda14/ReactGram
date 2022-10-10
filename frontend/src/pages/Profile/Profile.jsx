@@ -11,7 +11,7 @@ import {
   publishPhoto,
   resetError,
   resetMessage,
-  getUserPhotos,
+  updatePhoto,
 } from "../../slices/photoSlice";
 import {
   Avatar,
@@ -45,24 +45,43 @@ const Profile = () => {
     error: errorPhoto,
     message: messagePhoto,
   } = useSelector((state) => state.photo);
-  const { photos } = useSelector((state) => state.photo);
-  console.log(photos);
   const [imagem, setImagem] = useState("");
   const [titulo, setTitulo] = useState("");
-  const tituloRef = useRef("");
+  const [edit, setEdit] = useState(false);
+  const [editId, setEditId] = useState("");
 
   useEffect(() => {
     dispatch(getUserDetails(id));
-    dispatch(getUserPhotos(id));
   }, [dispatch, id]);
+
+  const changeForm = (photo) => {
+    setEdit(true);
+    setTitulo(photo.titulo);
+    setImagem(photo.imagem);
+    setEditId(photo._id);
+  };
 
   const validateTitulo = errorPhoto && errorPhoto.includes("título");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(tituloRef.current.value);
+    if (edit) {
+      const photoData = {
+        titulo,
+        _id: editId,
+      };
+      dispatch(updatePhoto(photoData));
+      setImagem("");
+      setTitulo("");
+      setTimeout(() => {
+        dispatch(resetMessage());
+      }, 2000);
+      setEditId("");
+      setEdit(!edit);
+      return;
+    }
     const photoData = {
-      titulo: tituloRef.current.value,
+      titulo,
       imagem,
     };
     const formData = new FormData();
@@ -74,8 +93,8 @@ const Profile = () => {
     formData.append("photo", photoFormData);
 
     dispatch(publishPhoto(formData));
-    // setTitulo("");
-    // setImagem("");
+    setImagem("");
+    setTitulo("");
     // const notify = () => toast.success("Sucesso demais bixo");
     // notify;
 
@@ -135,15 +154,13 @@ const Profile = () => {
             variant="outlined"
             placeholder="Insira um título"
             sx={sxForm}
-            inputRef={tituloRef}
-            onChange={() => dispatch(resetError())}
-            // value={titulo}
-            // onChange={(e) => {
-            //   if (errorPhoto) {
-            //     dispatch(resetError());
-            //   }
-            //   setTitulo(e.target.value);
-            // }}
+            value={titulo}
+            onChange={(e) => {
+              if (errorPhoto) {
+                dispatch(resetError());
+              }
+              setTitulo(e.target.value);
+            }}
             required
             error={validateTitulo}
             helperText={validateTitulo && errorPhoto}
@@ -151,30 +168,36 @@ const Profile = () => {
 
           <FormControl sx={sxForm}>
             <Card>
-              <input
-                hidden
-                accept="image/*"
-                id="teste"
-                type="file"
-                onChange={handlePicture}
-              />
-              {imagem && (
-                <IconButton
-                  onClick={() => setImagem("")}
-                  sx={{
-                    position: "absolute",
-                    right: 3,
-                    top: 3,
-                    zIndex: 2000,
-                    bgcolor: "#808080",
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
+              {!edit && (
+                <>
+                  <input
+                    hidden
+                    accept="image/*"
+                    id="teste"
+                    type="file"
+                    onChange={handlePicture}
+                  />
+                  {imagem && (
+                    <IconButton
+                      onClick={() => setImagem("")}
+                      sx={{
+                        position: "absolute",
+                        right: 3,
+                        top: 3,
+                        zIndex: 2000,
+                        bgcolor: "#808080",
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  )}
+                </>
               )}
 
               <CardActionArea
-                onClick={() => document.getElementById("teste").click()}
+                onClick={() =>
+                  !edit && document.getElementById("teste").click()
+                }
               >
                 {imagem ? (
                   loadingPhoto ? (
@@ -192,7 +215,11 @@ const Profile = () => {
                   ) : (
                     <CardMedia
                       component="img"
-                      image={URL.createObjectURL(imagem)}
+                      image={
+                        edit
+                          ? `${uploads}/photos/${imagem}`
+                          : URL.createObjectURL(imagem)
+                      }
                     />
                   )
                 ) : (
@@ -215,12 +242,13 @@ const Profile = () => {
 
           <FormControl sx={sxForm}>
             <Button type="submit" variant="contained">
-              Postar
+              {edit ? "Salvar" : "Postar"}
             </Button>
           </FormControl>
         </Box>
       )}
-      <Galeria photos={photos} uploads={uploads} />
+
+      <Galeria id={id} uploads={uploads} changeForm={changeForm} />
     </Box>
   );
 };
