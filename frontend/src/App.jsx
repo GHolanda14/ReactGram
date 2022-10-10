@@ -13,8 +13,7 @@ import { useAuth } from "./hooks/useAuth";
 import { Typography } from "@mui/material";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import Profile from "./pages/Profile/Profile";
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import Photo from "./pages/Photo/Photo";
 
 const darkTheme = createTheme({
   palette: {
@@ -56,6 +55,7 @@ function App() {
               path="/users/:id"
               element={auth ? <Profile /> : <Navigate to="/login" />}
             />
+            <Route path="/photos/:id" element={<Photo />} />
           </Routes>
         </div>
         <Footer />
